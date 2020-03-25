@@ -15,8 +15,7 @@ import reactor.core.publisher.Mono
 @Controller
 @RequestMapping("/data")
 class DataController(
-    private val dataService: ReactiveDataService,
-    private val securityService: SecurityService
+    private val dataService: ReactiveDataService
 ) {
 
     @GetMapping
@@ -27,7 +26,7 @@ class DataController(
             .map { ResponseEntity.ok(DataResponse(it)) }
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @securityService.notReactiveIsOwner(#dataId, principal)")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{dataId}")
     fun displayById(@AuthenticationPrincipal currentUser: CurrentUser, @PathVariable dataId: String): Mono<ResponseEntity<Data>> {
         return dataService

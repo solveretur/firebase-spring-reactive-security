@@ -1,8 +1,10 @@
 package com.github.solveretur.firebase.spring.reactive.security.security
 
+import com.github.solveretur.firebase.spring.reactive.security.user.AccessRole
 import com.github.solveretur.firebase.spring.reactive.security.user.UserService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authorization.AuthorizationDecision
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.ServerHttpSecurity
@@ -16,7 +18,8 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
 class SecurityConfig(
-    private val userService: UserService
+    private val userService: UserService,
+    private val securityService: SecurityService
 ) {
 
     @Bean
@@ -24,6 +27,17 @@ class SecurityConfig(
         return http
             .csrf().disable()
             .authorizeExchange()
+            .pathMatchers("/data/{dataId}")
+            .access { authentication, context ->
+                authentication
+                    .map { it.principal as CurrentUser }
+                    .flatMap { currentUser ->
+                        securityService
+                            .isOwner(context.variables["dataId"]!! as String, currentUser)
+                            .map { it || currentUser.getRole() == AccessRole.ROLE_ADMIN }
+                    }
+                    .map { AuthorizationDecision(it) }
+            }
             .anyExchange().authenticated()
             .and()
             .httpBasic()

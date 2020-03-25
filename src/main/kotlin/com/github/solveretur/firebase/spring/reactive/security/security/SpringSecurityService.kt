@@ -22,7 +22,7 @@ class SpringSecurityService constructor(
     }
 
     override fun isOwner(id: String, currentUser: CurrentUser): Mono<Boolean> {
-        return dataService.findById(id).map { it.appUserId == currentUser.getId() }
+        return dataService.findById(id).map { it.appUserId == currentUser.getId() }.defaultIfEmpty(false)
     }
 
     override fun notReactiveIsOwner(id: String, currentUser: CurrentUser): Boolean {
