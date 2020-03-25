@@ -7,6 +7,8 @@ import reactor.core.publisher.Mono
 
 interface SecurityService {
     fun login(username: String, password: String): Mono<AppUser>
+    fun isOwner(id: String, currentUser: CurrentUser): Mono<Boolean>
+    fun notReactiveIsOwner(id: String, currentUser: CurrentUser): Boolean
 
     companion object {
         private val passwordEncoder: PasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
