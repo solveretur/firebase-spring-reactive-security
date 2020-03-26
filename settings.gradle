@@ -1,0 +1,3 @@
+include 'firebase-spring-reactive-security-backend'
+include 'firebase-spring-reactive-security-frontend'
+
