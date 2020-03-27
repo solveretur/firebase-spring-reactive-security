@@ -32,7 +32,8 @@ class InMemoryDataService(private val clock: Clock) : ReactiveDataService {
         Data("1234-5678-4311", "admin", "data8", LocalDateTime.now(clock)),
         Data("1234-1098-1234", "user2", "data9", LocalDateTime.now(clock)),
         Data("1234-1234-1234", "user3", "data10", LocalDateTime.now(clock)),
-        Data("1234-5678-3210", "user3", "data11", LocalDateTime.now(clock))
+        Data("1234-5678-3210", "user3", "data11", LocalDateTime.now(clock)
+        )
     )
 
     override fun findById(id: String): Mono<Data> {

@@ -20,15 +20,16 @@ class DataController(
 
     @GetMapping
     fun display(@AuthenticationPrincipal currentUser: CurrentUser): Mono<ResponseEntity<DataResponse>> {
+        println("PRINCIPAL: $currentUser")
         return dataService
             .findAllByAppUserId(currentUser.getId())
             .collectList()
             .map { ResponseEntity.ok(DataResponse(it)) }
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{dataId}")
     fun displayById(@AuthenticationPrincipal currentUser: CurrentUser, @PathVariable dataId: String): Mono<ResponseEntity<Data>> {
+        println("PRINCIPAL: $currentUser")
         return dataService
             .findById(dataId)
             .map { ResponseEntity.ok(it) }
